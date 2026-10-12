@@ -1,0 +1,52 @@
+/* =====================================================================
+   ANIMATIONS « ARCHITECTURE » : tracé de plan, révélation de façade,
+   cote qui s'ouvre, réticule de dessin (CAO), barre de progression
+   ===================================================================== */
+
+/* --- Apparition progressive des contenus (déclenchée au défilement) --- */
+.js .rv{opacity:0;transform:translateY(30px);transition:opacity 1s var(--ease),transform 1s var(--ease);transition-delay:calc(var(--i,0) * 90ms)}
+.js .slide.in .rv{opacity:1;transform:none}
+
+/* --- Révélation des images : rideau qui s'ouvre, comme une façade --- */
+.js .rvimg{clip-path:inset(0 100% 0 0);transition:clip-path 1.4s var(--ease);transition-delay:calc(var(--i,0) * 110ms)}
+.js .slide.in .rvimg{clip-path:inset(0 0 0 0)}
+.js .side.rvimg,.js .quote .side.rvimg{clip-path:inset(0 0 100% 0)}
+.js .slide.in .side.rvimg{clip-path:inset(0 0 0 0)}
+
+/* --- Zoom lent (travelling) sur les images plein écran --- */
+@keyframes zoom{from{transform:scale(1.14)}to{transform:scale(1)}}
+.cover.in>.ph,.contact.in>.ph{animation:zoom 16s var(--ease) both}
+
+/* --- Titre d'accueil : lettres qui montent une à une --- */
+.js .hero h1 span{display:inline-block;opacity:0;transform:translateY(55%) rotate(3deg);transition:opacity .9s var(--ease),transform 1s var(--ease);transition-delay:calc(var(--c) * 60ms + .2s)}
+.js .cover.in .hero h1 span{opacity:1;transform:none}
+
+/* --- Cote d'architecte : la ligne s'ouvre depuis le centre --- */
+.js .title::after{clip-path:inset(0 50% 0 50%);transition:clip-path 1.2s var(--ease) .4s}
+.js .slide.in .title::after{clip-path:inset(0)}
+
+/* --- Dessin de plan (SVG) : les traits se tracent un à un --- */
+.bp{position:absolute!important;right:5%;bottom:7%;width:min(38vw,480px);height:auto;opacity:.6;pointer-events:none;z-index:0}
+.bp *{fill:none;stroke:var(--gold);stroke-width:1.2;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;
+  transition:stroke-dashoffset 2.8s var(--ease);transition-delay:calc(var(--k,0) * 220ms + .3s)}
+.bp .dim{stroke-width:.8;opacity:.8}
+.slide.in .bp *{stroke-dashoffset:0}
+.cover .bp{right:4%;top:14%;bottom:auto}
+
+/* --- Barre de progression du défilement --- */
+#bar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--gold);transform-origin:0 50%;transform:scaleX(0);z-index:10}
+
+/* --- Réticule de dessin (curseur CAO) --- */
+#ch-x,#ch-y,#ch-l{position:fixed;pointer-events:none;z-index:8;opacity:0;transition:opacity .4s}
+#ch-x{left:0;right:0;top:0;height:1px;background:#b48a5e55}
+#ch-y{top:0;bottom:0;left:0;width:1px;background:#b48a5e55}
+#ch-l{left:0;top:0;font:400 10px/1 'Jost',monospace;letter-spacing:.12em;color:var(--gold);background:#0009;padding:3px 6px}
+body.ch #ch-x,body.ch #ch-y,body.ch #ch-l{opacity:1}
+@media(pointer:coarse){#ch-x,#ch-y,#ch-l{display:none}}
+
+/* --- Accessibilité : pas d'animation si l'utilisateur la désactive --- */
+@media(prefers-reduced-motion:reduce){
+  .js .rv,.js .rvimg,.js .hero h1 span{opacity:1;transform:none;clip-path:none;transition:none}
+  .js .title::after{clip-path:none;transition:none}
+  .bp *{stroke-dashoffset:0;transition:none}.cover.in>.ph,.contact.in>.ph{animation:none}
+}
